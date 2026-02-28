@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nathaniel — Designer, Writer, Trader & Researcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f7f4;
+      --ink: #111010;
+      --muted: #888;
+      --accent: #c8a96e;
+      --line: #e5e0d8;
+      --card: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: multiply;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      background: rgba(249,247,244,0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 3rem 4rem;
+      max-width: 900px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.2s forwards;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.8rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+    .hero-cta span { font-size: 1rem; }
+
+    .hero-scroll {
+      margin-top: 5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .hero-scroll::after {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: var(--muted);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--line);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTION COMMON ── */
+    section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    section.visible { opacity: 1; transform: translateY(0); }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    .about-meta { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.5rem; }
+
+    .meta-item { border-top: 1px solid var(--line); padding-top: 1rem; }
+    .meta-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .meta-value {
+      font-size: 0.92rem;
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    /* ── SKILLS ── */
+    .skills-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .skill-card {
+      background: var(--card);
+      padding: 2rem 1.8rem;
+      transition: background 0.2s;
+    }
+    .skill-card:hover { background: var(--bg); }
+
+    .skill-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: var(--line);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .skill-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .skill-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── WORK/FOCUS ── */
+    .focus-list { display: flex; flex-direction: column; gap: 0; }
+
+    .focus-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.6rem 0;
+      border-top: 1px solid var(--line);
+      cursor: default;
+      transition: padding-left 0.3s ease;
+    }
+    .focus-item:last-child { border-bottom: 1px solid var(--line); }
+    .focus-item:hover { padding-left: 0.8rem; }
+
+    .focus-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+    }
+
+    .focus-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+    }
+
+    /* ── CONNECT ── */
+    .connect-inner {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      flex-wrap: wrap; gap: 2rem;
+    }
+
+    .connect-inner h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+      max-width: 480px;
+    }
+
+    .connect-inner h2 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .social-links { display: flex; flex-direction: column; gap: 1rem; align-items: flex-end; }
+
+    .social-link {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .social-link:hover { color: var(--ink); }
+    .social-link svg { width: 16px; height: 16px; }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--line);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleX(1); opacity: 1; }
+      50% { transform: scaleX(1.5); opacity: 0.4; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.2rem; }
+      .hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .skills-list { grid-template-columns: 1fr; }
+      .connect-inner { flex-direction: column; align-items: flex-start; }
+      .social-links { align-items: flex-start; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Nathaniel.</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#focus">Work</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">Available for projects</p>
+    <h1>Designer.<br/><em>Writer.</em><br/>Researcher.</h1>
+    <p class="hero-tagline">Sharing alpha, DeFi & AI narratives with you — one story at a time.</p>
+    <a href="#connect" class="hero-cta">Let's Work Together <span>→</span></a>
+    <p class="hero-scroll">Scroll to explore</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label">About</p>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>Where creativity meets conviction.</h2>
+        <p>I'm Nathaniel — a designer, writer, trader, and researcher living at the intersection of Web3, DeFi, and emerging AI narratives. I translate complex ideas into clear, compelling stories and visuals that move people to act.</p>
+      </div>
+      <div class="about-meta">
+        <div class="meta-item">
+          <p class="meta-label">Discipline</p>
+          <p class="meta-value">Design · Writing · Trading · Research</p>
+        </div>
+        <div class="meta-item">
+          <p class="meta-label">Focus Areas</p>
+          <p class="meta-value">DeFi · AI · Web3 Narratives</p>
+        </div>
+        <div class="meta-item">
+          <p class="meta-label">Currently</p>
+          <p class="meta-value">Open to collaborations & projects</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <p class="section-label">Skills</p>
+    <div class="skills-list">
+      <div class="skill-card">
+        <span class="skill-number">01</span>
+        <p class="skill-name">Figma</p>
+        <p class="skill-desc">UI/UX design, visual systems, contest graphics, and brand identity.</p>
+      </div>
+      <div class="skill-card">
+        <span class="skill-number">02</span>
+        <p class="skill-name">SEO</p>
+        <p class="skill-desc">Content strategy, keyword research, and organic growth frameworks.</p>
+      </div>
+      <div class="skill-card">
+        <span class="skill-number">03</span>
+        <p class="skill-name">AI Prompt</p>
+        <p class="skill-desc">Precision prompting for research, content, design briefs, and automation.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FOCUS / WORK -->
+  <section id="focus">
+    <p class="section-label">What I Do</p>
+    <div class="focus-list">
+      <div class="focus-item">
+        <span class="focus-title">Visual Design & Graphics</span>
+        <span class="focus-tag">Figma</span>
+      </div>
+      <div class="focus-item">
+        <span class="focus-title">DeFi & Crypto Research</span>
+        <span class="focus-tag">Web3</span>
+      </div>
+      <div class="focus-item">
+        <span class="focus-title">Content & Alpha Writing</span>
+        <span class="focus-tag">Narratives</span>
+      </div>
+      <div class="focus-item">
+        <span class="focus-title">AI-Powered Workflows</span>
+        <span class="focus-tag">Automation</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONNECT -->
+  <section id="connect">
+    <p class="section-label">Connect</p>
+    <div class="connect-inner">
+      <h2>Let's build something <em>worth talking about.</em></h2>
+      <div class="social-links">
+        <a href="https://x.com/no0thernath" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.733-8.835L1.254 2.25H8.08l4.258 5.63 5.906-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @no0thernath
+        </a>
+        <a href="https://www.linkedin.com/in/nathanielonaolapo/" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Nathaniel Onaolapo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Nathaniel</span>
+    <span>Designer · Writer · Trader · Researcher</span>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX - 5 + 'px';
+      cursor.style.top = e.clientY - 5 + 'px';
+    });
+    document.querySelectorAll('a, .focus-item, .skill-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(3)');
+      el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('section').forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
